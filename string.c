@@ -11,6 +11,7 @@
 
 *****************************************************************************/
 
+#define _CRT_SECURE_NO_WARNINGS
 #ifdef _WIN32
  #define WIN32_LEAN_AND_MEAN
  #include <windows.h>
@@ -110,7 +111,7 @@ BOOL IsExt( char *szFileName, char *szExt ){
 	return(
 		( pExt = SearchExt( szFileName )) == NULL ?
 			szExt == NULL :
-			!stricmp( ++pExt, szExt )
+			!_stricmp( ++pExt, szExt )
 	);
 }
 
