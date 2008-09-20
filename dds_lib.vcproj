@@ -46,7 +46,6 @@
 				AdditionalIncludeDirectories="../"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				StringPooling="true"
-				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				PrecompiledHeaderFile=".\Release/dds_lib.pch"
 				AssemblerListingLocation=".\Release/"
