@@ -13,8 +13,11 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 #ifdef _WIN32
- #define WIN32_LEAN_AND_MEAN
- #include <windows.h>
+	#define WIN32_LEAN_AND_MEAN
+	#include <windows.h>
+	#include <direct.h>
+	#define	getcwd	_getcwd
+	#define	chdir	_chdir
 #endif
 #include <stdlib.h>
 
@@ -99,6 +102,26 @@ char *StrTokFile( char *szDst, char *szFileName, char cMode ){
 	}
 	
 	return( ZeroToNull( szDst ));
+}
+
+
+/*** cdir を指定したフルパス名取得 ******************************************/
+// szCDir はファイルでもよい
+
+char *GetFullPathWithCDir( char *szDst, char *szFileName, char *szCDir ){
+	
+	char	szCWDir[ MAX_PATH ];
+	
+	getcwd( szCWDir, MAX_PATH );	// カレント dir
+	
+	// szCDir の dir 部分取得
+	StrTokFile( szDst, szCDir, STF_PATH2 | STF_LONG | STF_FULL );
+	
+	if( chdir( szDst ) != 0 ) return NULL;					// CDir に cd
+	StrTokFile( szDst, szFileName, STF_FULL | STF_LONG );	// szFileName の FullPath
+	chdir( szCWDir );										// pwd を元に戻す
+	
+	return szDst;
 }
 
 /*** IsExt ******************************************************************/

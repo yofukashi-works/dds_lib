@@ -33,6 +33,7 @@ enum{
 };
 
 char *	StrTokFile( char *, char *, char );
+char *	GetFullPathWithCDir( char *szDst, char *szFileName, char *szCDir );
 BOOL	IsExt( char *, char * );
 char *	ChangeExt( char *, char *, char * );
 char *	StrCatPathChar( char * );
