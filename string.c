@@ -36,31 +36,31 @@
 	該当部分がなければ，ret = NULL
 */
 
-char *StrTokFile( char *szDst, char *szFileName, char cMode ){
+char *StrTokFile( char *szDst, const char *szFileName, UINT uMode ){
 	
-	char	*pPath,
-			*pNode,
-			*pExt,
-			*pSce = szFileName,
-			*pDst = szDst;
+	const char	*pPath,
+				*pNode,
+				*pExt,
+				*pSce = szFileName;
+	char		*pDst = szDst;
 	
 	DWORD	dwLen;
 	
 	#ifdef _WIN32
 		if( szDst ){
 			// full path 変換
-			if( cMode & STF_FULL ){
+			if( uMode & STF_FULL ){
 				if(( dwLen = GetFullPathName( pSce, MAX_PATH, szDst, NULL )) && dwLen < MAX_PATH )
 					pSce = szDst;
 			}
 			
 			// LFN 変換
-			if( cMode & STF_LONG ){
+			if( uMode & STF_LONG ){
 				if(( dwLen = GetLongPathName( pSce, szDst, MAX_PATH )) && dwLen < MAX_PATH )
 					pSce = szDst;
 				
 			// SFN 変換
-			}else if( cMode & STF_SHORT ){
+			}else if( uMode & STF_SHORT ){
 				if(( dwLen = GetShortPathName( pSce, szDst, MAX_PATH )) && dwLen < MAX_PATH )
 					pSce = szDst;
 			}
@@ -81,24 +81,24 @@ char *StrTokFile( char *szDst, char *szFileName, char cMode ){
 	if( !( pExt = strrchr( pNode, '.' ))) pExt = strchr( pNode, '\0' );
 	
 	if( szDst == NULL ){
-		if( cMode & STF_PATH )	return( ZeroToNull( pPath ));
-		if( cMode & STF_NODE )	return( ZeroToNull( pNode ));
-		if( cMode & STF_EXT )	return( ZeroToNull( pExt ));
-		return( pSce );
+		if( uMode & STF_PATH )	return(( char *)ZeroToNull( pPath ));
+		if( uMode & STF_NODE )	return(( char *)ZeroToNull( pNode ));
+		if( uMode & STF_EXT )	return(( char *)ZeroToNull( pExt ));
+		return(( char *)pSce );
 	}
 	
 	// szDst にコピー
 	// StrCpy_fromP2P の arg[ 1 ] は破壊される
-	if(( cMode & ( STF_DRV | STF_PATH | STF_NODE | STF_EXT )) == 0 ){
+	if(( uMode & ( STF_DRV | STF_PATH | STF_NODE | STF_EXT )) == 0 ){
 		strcpy( pDst, pSce );
 	}else{
-		if( cMode & STF_DRV )  StrCpy_fromP2P( pDst, pSce,  pPath );
-		if( cMode & STF_PATH ) StrCpy_fromP2P( pDst, pPath, pNode );
-		if( cMode & STF_NODE ) StrCpy_fromP2P( pDst, pNode, pExt );
+		if( uMode & STF_DRV )  StrCpy_fromP2P( pDst, pSce,  pPath );
+		if( uMode & STF_PATH ) StrCpy_fromP2P( pDst, pPath, pNode );
+		if( uMode & STF_NODE ) StrCpy_fromP2P( pDst, pNode, pExt );
 		
 		*pDst = '\0';
 		
-		if( cMode & STF_EXT )  strcpy( pDst, pExt );
+		if( uMode & STF_EXT )  strcpy( pDst, pExt );
 	}
 	
 	return( ZeroToNull( szDst ));
@@ -108,7 +108,7 @@ char *StrTokFile( char *szDst, char *szFileName, char cMode ){
 /*** cdir を指定したフルパス名取得 ******************************************/
 // szCDir はファイルでもよい
 
-char *GetFullPathWithCDir( char *szDst, char *szFileName, char *szCDir ){
+char *GetFullPathWithCDir( char *szDst, const char *szFileName, const char *szCDir ){
 	
 	char	szCWDir[ MAX_PATH ];
 	

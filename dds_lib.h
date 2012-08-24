@@ -32,8 +32,8 @@ enum{
 	STF_PATH2	= STF_DRV  | STF_PATH
 };
 
-char *	StrTokFile( char *, char *, char );
-char *	GetFullPathWithCDir( char *szDst, char *szFileName, char *szCDir );
+char *	StrTokFile( char *, const char *, UINT );
+char *	GetFullPathWithCDir( char *szDst, const char *szFileName, const char *szCDir );
 BOOL	IsExt( char *, char * );
 char *	ChangeExt( char *, char *, char * );
 char *	StrCatPathChar( char * );
