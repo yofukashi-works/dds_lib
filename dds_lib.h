@@ -34,7 +34,7 @@ enum{
 
 char *	StrTokFile( char *, const char *, UINT );
 char *	GetFullPathWithCDir( char *szDst, const char *szFileName, const char *szCDir );
-BOOL	IsExt( char *, char * );
+BOOL IsExt( const char *szFileName, const char *szExt );
 char *	ChangeExt( char *, char *, char * );
 char *	StrCatPathChar( char * );
 char *	StrShift( char *, int );

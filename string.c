@@ -127,7 +127,7 @@ char *GetFullPathWithCDir( char *szDst, const char *szFileName, const char *szCD
 /*** IsExt ******************************************************************/
 /* ファイル名 vs 拡張子の比較	szExt には '.' を含まない */
 
-BOOL IsExt( char *szFileName, char *szExt ){
+BOOL IsExt( const char *szFileName, const char *szExt ){
 	
 	char *pExt;
 	
