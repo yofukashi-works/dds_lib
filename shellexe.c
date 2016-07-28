@@ -1,19 +1,19 @@
 /*****************************************************************************
 
-		shellexe.c -- Ž©‰Æ» shell execute
+		shellexe.c -- è‡ªå®¶è£½ shell execute
 		Copyright(C) 2000-'01 by D.D.S
 
-2000.04.01	%L ‚ð %1 ‚Æ“¯ˆêŽ‹
-2000.07.08	$1 $* ‚ðŽg—p‰Â”\‚É
-2000.08.25	GetRegStr: (•W€) ‚Ì’l‚ª‚È‚¢‚¾‚¯‚¾‚Á‚½‚ç "" ‚ðƒŠƒ^[ƒ“ ( NT ‘Îô )
-2001.02.03	Magic ID ‚ÌƒTƒ|[ƒg‚ð #! ‚¾‚¯‚É‚µ‚½
-			ƒtƒ@ƒCƒ‹æ“ª SEARCH_LEN “à‚Ì Magic ID2 ‚ð Magic ID ‚Æ‚Ý‚È‚·
-2002.01.01	HKCR\.ext ‚Ì (•W€) ‚ª‚È‚¢‚Æ‚«‚Í Unknown ‚ðŽg—p‚·‚é
-2002.02.04	%hoge% ‚ð’uŠ·‚·‚é
-2003.02.21	ˆø” StartupInfo, uOption ’Ç‰Á
-2005.03.10	uOption ‚Ì”»’è‚Å & ‚¶‚á‚È‚­‚Ä | ‚É‚È‚Á‚Ä‚½Q|P|›
-2005.03.14	ShellExecute() ‚Å Scripter ‚ðŒÄ‚Ô‚Æ MAGIC_ID ‚ª Hit ‚µ‚Ä‚½Q|P|›
-2005.05.21	EXECFILE_CHDIR ‚ðŽw’è‚µ‚È‚¢‚Æ‚« szPath ‚ª•s’è‚¾‚Á‚½
+2000.04.01	%L ã‚’ %1 ã¨åŒä¸€è¦–
+2000.07.08	$1 $* ã‚’ä½¿ç”¨å¯èƒ½ã«
+2000.08.25	GetRegStr: (æ¨™æº–) ã®å€¤ãŒãªã„ã ã‘ã ã£ãŸã‚‰ "" ã‚’ãƒªã‚¿ãƒ¼ãƒ³ ( NT å¯¾ç­– )
+2001.02.03	Magic ID ã®ã‚µãƒãƒ¼ãƒˆã‚’ #! ã ã‘ã«ã—ãŸ
+			ãƒ•ã‚¡ã‚¤ãƒ«å…ˆé ­ SEARCH_LEN å†…ã® Magic ID2 ã‚’ Magic ID ã¨ã¿ãªã™
+2002.01.01	HKCR\.ext ã® (æ¨™æº–) ãŒãªã„ã¨ãã¯ Unknown ã‚’ä½¿ç”¨ã™ã‚‹
+2002.02.04	%hoge% ã‚’ç½®æ›ã™ã‚‹
+2003.02.21	å¼•æ•° StartupInfo, uOption è¿½åŠ 
+2005.03.10	uOption ã®åˆ¤å®šã§ & ã˜ã‚ƒãªãã¦ | ã«ãªã£ã¦ãŸï¼¿|?|â—‹
+2005.03.14	ShellExecute() ã§ Scripter ã‚’å‘¼ã¶ã¨ MAGIC_ID ãŒ Hit ã—ã¦ãŸï¼¿|?|â—‹
+2005.05.21	EXECFILE_CHDIR ã‚’æŒ‡å®šã—ãªã„ã¨ã szPath ãŒä¸å®šã ã£ãŸ
 
 *****************************************************************************/
 
@@ -26,26 +26,26 @@
 
 /*** macros *****************************************************************/
 
-#define IsLFN( s )	( strchr( s, ' ' ) || strchr( s, '\t' ))
+#define IsLFN( s )	( _tcschr( s, _T( ' ' )) || _tcschr( s, _T( '\t' )))
 
 /*** const definition *******************************************************/
 
-#define BUFSIZE		1024			// ƒoƒbƒtƒ@ƒTƒCƒY
-#define SEARCH_LEN	( 1024 * 64 )	// #! ‚ðƒT[ƒ`‚·‚é”ÍˆÍ
+#define BUFSIZE		1024			// ãƒãƒƒãƒ•ã‚¡ã‚µã‚¤ã‚º
+#define SEARCH_LEN	( 1024 * 64 )	// #! ã‚’ã‚µãƒ¼ãƒã™ã‚‹ç¯„å›²
 
-#define EXECDIR_FIRST_FILE			// current dir ‚ð %1 ‚Ì dir ‚É•ÏX
-#define RETURN_EXEC_CMD				// szExecCmd ‚ð szCmdLine ‚É•Ô‚·
+#define EXECDIR_FIRST_FILE			// current dir ã‚’ %1 ã® dir ã«å¤‰æ›´
+#define RETURN_EXEC_CMD				// szExecCmd ã‚’ szCmdLine ã«è¿”ã™
 
-#define MAGIC_ID	"#!"
-#define MAGIC_ID2	"#Executable" MAGIC_ID
+#define MAGIC_ID	_T( "#!" )
+#define MAGIC_ID2	_T( "#Executable" ) MAGIC_ID
 
 /*** get a string from REGISTORY ********************************************/
 
-char *GetRegStr(
+TCHAR *GetRegStr(
 	HKEY	hKey,			// HKEY_*
-	char	*pSubKey,		// sub key name
-	char	*pValueName,	// member name
-	char	*szDst			// output buffer
+	TCHAR	*pSubKey,		// sub key name
+	TCHAR	*pValueName,	// member name
+	TCHAR	*szDst			// output buffer
 ){
 	
 	HKEY	hSubKey;					/* for getting default action		*/
@@ -58,76 +58,76 @@ char *GetRegStr(
 		);
 		RegCloseKey( hSubKey );
 		
-		// –â‘è‚È‚­I‚í‚Á‚½‚çC–â‘è‚È‚­ƒŠƒ^[ƒ“
+		// å•é¡Œãªãçµ‚ã‚ã£ãŸã‚‰ï¼Œå•é¡Œãªããƒªã‚¿ãƒ¼ãƒ³
 		if( lResult == ERROR_SUCCESS ) return( szDst );
 		
-		// (•W€) ‚Ì’l‚ª‚È‚¢‚¾‚¯‚¾‚Á‚½‚çC"" ‚ðƒŠƒ^[ƒ“ ( NT ‘Îô )
+		// (æ¨™æº–) ã®å€¤ãŒãªã„ã ã‘ã ã£ãŸã‚‰ï¼Œ"" ã‚’ãƒªã‚¿ãƒ¼ãƒ³ ( NT å¯¾ç­– )
 		if( pValueName == NULL ){
-			*szDst = '\0';
+			*szDst = _T( '\0' );
 			return( szDst );
 		}
 	}
-	*szDst = '\0';
+	*szDst = _T( '\0' );
 	return( NULL );
 }
 
-/*** reg ‚©‚ç•W€ƒAƒNƒVƒ‡ƒ“ƒRƒ}ƒ“ƒh‚ð“Ç‚Þ ‚È‚¯‚ê‚Î Unknown\open *************/
+/*** reg ã‹ã‚‰æ¨™æº–ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚³ãƒžãƒ³ãƒ‰ã‚’èª­ã‚€ ãªã‘ã‚Œã° Unknown\open *************/
 
-char *GetDefaultAction( char *szAction, char *szFileName ){
+TCHAR *GetDefaultAction( TCHAR *szAction, TCHAR *szFileName ){
 	
-	char	szVerb[ BUFSIZE ],
+	TCHAR	szVerb[ BUFSIZE ],
 			*pExt;
 	
 	do{
-		// Šg’£Žq‚ðŽæ“¾
+		// æ‹¡å¼µå­ã‚’å–å¾—
 		if(( pExt = SearchExt( szFileName )) == NULL ) break;
 		
-		// HKCR\.ext ‚Ì’l‚ðŽæ“¾
+		// HKCR\.ext ã®å€¤ã‚’å–å¾—
 		GetRegStr( HKEY_CLASSES_ROOT, pExt, NULL, szAction );
-		if( *szAction == '\0' ) break;
+		if( *szAction == _T( '\0' )) break;
 		
 		// szAction = HKCR\extfile + \shell\ (^^;
-		strcat( szAction, "\\shell\\" );
+		_tcscat( szAction, "\\shell\\" );
 		
-		// HKCR\extfile\shell\(•W€) ‚ðŽæ“¾
+		// HKCR\extfile\shell\(æ¨™æº–) ã‚’å–å¾—
 		GetRegStr( HKEY_CLASSES_ROOT, szAction, NULL, szVerb );
 		
-		// HKCR\extfile\shell\szVerb\command	‚È‚¯‚ê‚Î
+		// HKCR\extfile\shell\szVerb\command	ãªã‘ã‚Œã°
 		// HKCR\extfile\shell\open\command
-		strcat( strcat( szAction, *szVerb ? szVerb : "open" ), "\\command" );
+		_tcscat( _tcscat( szAction, *szVerb ? szVerb : _T( "open" )), _T( "\\command" ));
 		
-		// ª‚Ì’l‚ðŽæ“¾
+		// â†‘ã®å€¤ã‚’å–å¾—
 		GetRegStr( HKEY_CLASSES_ROOT, szAction, NULL, szAction );
-		if( *szAction != '\0' ) return( szAction );
+		if( *szAction != _T( '\0' )) return( szAction );
 		
 	}while( 0 );
 	
-	// Šg’£Žq‚ª‚È‚¢ or ŽÀs‰Â”\‚ÈƒAƒNƒVƒ‡ƒ“‚ªŽæ“¾‚Å‚«‚È‚©‚Á‚½
-	strcpy( szAction, "Unknown\\shell\\edit\\command" );
+	// æ‹¡å¼µå­ãŒãªã„ or å®Ÿè¡Œå¯èƒ½ãªã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãŒå–å¾—ã§ããªã‹ã£ãŸ
+	_tcscpy( szAction, _T( "Unknown\\shell\\edit\\command" ));
 	return( GetRegStr( HKEY_CLASSES_ROOT, szAction, NULL, szAction ));
 }
 
-/*** —^‚¦‚ç‚ê‚½ƒtƒ@ƒCƒ‹‚Ì shell esc cmd ‚ð•Ô‚· ‚È‚¯‚ê‚Î NULL ****************/
+/*** ä¸Žãˆã‚‰ã‚ŒãŸãƒ•ã‚¡ã‚¤ãƒ«ã® shell esc cmd ã‚’è¿”ã™ ãªã‘ã‚Œã° NULL ****************/
 
-char *GetShellEscAction( char *szAction, char *szFileName ){
+TCHAR *GetShellEscAction( TCHAR *szAction, TCHAR *szFileName ){
 	
 	FILE	*fp;
-	char	*pCmdLineParam,
+	TCHAR	*pCmdLineParam,
 			*p,
 			szBuf		[ SEARCH_LEN ],
 			szCmdFile	[ BUFSIZE ];
 	
-	static char	szMagicID[]  = MAGIC_ID,
+	static TCHAR	szMagicID[]  = MAGIC_ID,
 				szMagicID2[] = MAGIC_ID2;
 	
-	// open Ž¸”s‚Å NULL return
-	if(( fp = fopen( szFileName, "rb" )) == NULL ) return( NULL );
+	// open å¤±æ•—ã§ NULL return
+	if(( fp = fopen( szFileName, _T( "rb" ))) == NULL ) return( NULL );
 	
-	// ˆês“Ç‚Þ
+	// ä¸€è¡Œèª­ã‚€
 	fgets( szBuf, SEARCH_LEN, fp );
 	
 	// search #! /hogehoge/....
-	if( p = strstr( szBuf, szMagicID )){
+	if( p = _tcsstr( szBuf, szMagicID )){
 		p += sizeof( szMagicID ) - 1;
 		
 	}else if(
@@ -139,26 +139,26 @@ char *GetShellEscAction( char *szAction, char *szFileName ){
 	
 	fclose( fp );
 	
-	// shell esc ‚ªŒ©‚Â‚©‚ç‚È‚¢
-	if( p == NULL || *p == '\0' ) return( NULL );
+	// shell esc ãŒè¦‹ã¤ã‹ã‚‰ãªã„
+	if( p == NULL || *p == _T( '\0' )) return( NULL );
 	
-	/*** shell esc ‚ªŒ©‚Â‚©‚Á‚½ *********************************************/
+	/*** shell esc ãŒè¦‹ã¤ã‹ã£ãŸ *********************************************/
 	
-	// p ‚Ì’¼Œã‚Ì 0x0D / 0x0A ‚ð 0 ‚É‚·‚é
+	// p ã®ç›´å¾Œã® 0x0D / 0x0A ã‚’ 0 ã«ã™ã‚‹
 	
 	pCmdLineParam = p;
-	if( p = strchr( pCmdLineParam, 0xD )) *p = '\0';
-	if( p = strchr( pCmdLineParam, 0xA )) *p = '\0';
+	if( p = _tcschr( pCmdLineParam, 0xD )) *p = _T( '\0' );
+	if( p = _tcschr( pCmdLineParam, 0xA )) *p = _T( '\0' );
 	
-	// ŽÀsƒtƒ@ƒCƒ‹–¼‚ðØ‚èo‚µ
+	// å®Ÿè¡Œãƒ•ã‚¡ã‚¤ãƒ«åã‚’åˆ‡ã‚Šå‡ºã—
 	StrGetParam( szCmdFile, &pCmdLineParam );
 	
-	// / ¨ \ •ÏŠ·
-	for( p = szCmdFile; *p != '\0'; ++p ) if( *p == '/' ) *p = '\\';
+	// / â†’ \ å¤‰æ›
+	for( p = szCmdFile; *p != _T( '\0' ); ++p ) if( *p == _T( '/' )) *p = '\\';
 	
-	// cmd line param ‚ÆŒ‹‡‚µ‚ÄŠ®¬!!
+	// cmd line param ã¨çµåˆã—ã¦å®Œæˆ!!
 	sprintf( szAction,
-		( *pCmdLineParam != '\0' ) ? "\"%s\" %s" : "\"%s\"",
+		( *pCmdLineParam != _T( '\0' )) ? _T( "\"%s\" %s" ) : _T( "\"%s\"" ),
 		szCmdFile, pCmdLineParam );
 	
 	return( szAction );
@@ -166,23 +166,23 @@ char *GetShellEscAction( char *szAction, char *szFileName ){
 
 /*** get default action of the file type ************************************/
 /*
-szCmdLine ‚Ì %1 ‚ðŽ¯•Ê‚µ‚Ä“KØ‚ÈŽÀsƒtƒ@ƒCƒ‹‚ðŽÀs‚·‚éD
-%1 ‚ÌƒVƒFƒ‹ƒGƒXƒP[ƒv‚à”FŽ¯‚·‚é
-%1 ‚ÌƒpƒX‚É cd ‚µ‚Ä‚©‚çŽÀs‚·‚é
-–ß‚è’l‚Í CreateProcess ‚Ì‚»‚ê
+szCmdLine ã® %1 ã‚’è­˜åˆ¥ã—ã¦é©åˆ‡ãªå®Ÿè¡Œãƒ•ã‚¡ã‚¤ãƒ«ã‚’å®Ÿè¡Œã™ã‚‹ï¼Ž
+%1 ã®ã‚·ã‚§ãƒ«ã‚¨ã‚¹ã‚±ãƒ¼ãƒ—ã‚‚èªè­˜ã™ã‚‹
+%1 ã®ãƒ‘ã‚¹ã« cd ã—ã¦ã‹ã‚‰å®Ÿè¡Œã™ã‚‹
+æˆ»ã‚Šå€¤ã¯ CreateProcess ã®ãã‚Œ
 */
 BOOL ExecuteFile(
-	char				*szCmdLine,
+	TCHAR				*szCmdLine,
 	STARTUPINFO			*pStartupInfo,
 	PROCESS_INFORMATION	*ppiRet,
 	UINT				uOption
 ){
 	
-	char	szFirstParam[ BUFSIZE ],	// %1
+	TCHAR	szFirstParam[ BUFSIZE ],	// %1
 			*pOtherParam,				// %*
-			szAction[ BUFSIZE ],		// %1 %* “™‚ðŠÜ‚ÞƒRƒ}ƒ“ƒh
-			szExecCmd[ BUFSIZE ],		// ŽÀÛ‚ÉŽÀs‚·‚é cmd + param
-			szPath[ BUFSIZE ],			// %1 ‚ÌƒpƒX
+			szAction[ BUFSIZE ],		// %1 %* ç­‰ã‚’å«ã‚€ã‚³ãƒžãƒ³ãƒ‰
+			szExecCmd[ BUFSIZE ],		// å®Ÿéš›ã«å®Ÿè¡Œã™ã‚‹ cmd + param
+			szPath[ BUFSIZE ],			// %1 ã®ãƒ‘ã‚¹
 			*pAction,
 			*pExecCmd;
 	
@@ -193,79 +193,79 @@ BOOL ExecuteFile(
 	STARTUPINFO			si;
 	PROCESS_INFORMATION	pi;
 	
-	// ƒAƒNƒVƒ‡ƒ“ get!!
+	// ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ get!!
 	pOtherParam = szCmdLine;
 	StrGetParam( szFirstParam, &pOtherParam );
 	
 	// Esc sequence
 	if( GetShellEscAction( szAction, szFirstParam ) == NULL ){
 		
-		// Šg’£Žq–³‚µ‚È‚çŽÀsŒ`Ž®‚ÌŠm”F‚ð‚·‚é
+		// æ‹¡å¼µå­ç„¡ã—ãªã‚‰å®Ÿè¡Œå½¢å¼ã®ç¢ºèªã‚’ã™ã‚‹
 		if(
 			!SearchExt( szFirstParam ) &&
 			( int )FindExecutable( szFirstParam, NULL, szExecCmd ) > 32 ){
 			
-			strcpy( szFirstParam, szExecCmd );
+			_tcscpy( szFirstParam, szExecCmd );
 		}
 		if( GetDefaultAction( szAction, szFirstParam ) == NULL )
-			strcpy( szAction, "start" );	// ‚«‚á[ (^^;
+			_tcscpy( szAction, _T( "start" ));	// ãã‚ƒãƒ¼ (^^;
 	}
 	
-	// ŠÂ‹«•Ï”‚ð’uŠ·
-	// szExecCmd ‚Í tmp “I‚ÉŽg‚Á‚Ä‚éD‚ÅCŽÀÛ‚É’uŠ·‚³‚ê‚½‚à‚Ì‚ª
-	// ‚ ‚é‚Æ‚«‚É‚¾‚¯ szAction ‚É‘‚«–ß‚µ‚Ä‚¢‚é
-	if( StrReplaceEnv( szExecCmd, szAction )) strcpy( szAction, szExecCmd );
+	// ç’°å¢ƒå¤‰æ•°ã‚’ç½®æ›
+	// szExecCmd ã¯ tmp çš„ã«ä½¿ã£ã¦ã‚‹ï¼Žã§ï¼Œå®Ÿéš›ã«ç½®æ›ã•ã‚ŒãŸã‚‚ã®ãŒ
+	// ã‚ã‚‹ã¨ãã«ã ã‘ szAction ã«æ›¸ãæˆ»ã—ã¦ã„ã‚‹
+	if( StrReplaceEnv( szExecCmd, szAction )) _tcscpy( szAction, szExecCmd );
 	
-	// %1 %* ‚ª”²‚¯‚Ä‚éê‡‚Í‚»‚ê‚ð’Ç‰Á
-	if( !strstr( szAction, "%1" ) &&
-		!strstr( szAction, "%L" ) &&
-		!strstr( szAction, "$1" )) strcat( szAction, " \"%1\"" );
+	// %1 %* ãŒæŠœã‘ã¦ã‚‹å ´åˆã¯ãã‚Œã‚’è¿½åŠ 
+	if( !_tcsstr( szAction, _T( "%1" )) &&
+		!_tcsstr( szAction, _T( "%L" )) &&
+		!_tcsstr( szAction, _T( "$1" ))) _tcscat( szAction, _T( " \"%1\"" ));
 	
-	if( !strstr( szAction, "%*" ) &&
-		!strstr( szAction, "$*" )) strcat( szAction, " %*" );
+	if( !_tcsstr( szAction, _T( "%*" )) &&
+		!_tcsstr( szAction, _T( "$*" ))) _tcscat( szAction, _T( " %*" ));
 	
-	// %1 ‚ªLFN ‚Å "%1" ‚Å‚È‚©‚Á‚½‚Æ‚«‚Ì‘Îô
-	if( IsLFN( szFirstParam ) && strstr( szAction, "\"%1\"" ) == NULL ){
+	// %1 ãŒLFN ã§ _T( "%1" ) ã§ãªã‹ã£ãŸã¨ãã®å¯¾ç­–
+	if( IsLFN( szFirstParam ) && _tcsstr( szAction, _T( "\"%1\"" )) == NULL ){
 		
-		strcpy( szExecCmd, szFirstParam );
+		_tcscpy( szExecCmd, szFirstParam );
 		GetShortPathName( szExecCmd, szFirstParam, BUFSIZE );
 	}
 	
-	// %? ‚Ì’uŠ·
+	// %? ã®ç½®æ›
 	pAction  = szAction;
 	pExecCmd = szExecCmd;
 	
 	do{
-		if( *pAction == '%' || *pAction == '$' ){
+		if( *pAction == _T( '%' ) || *pAction == _T( '$' )){
 			switch( *++pAction ){
-			  case '1':
-			  case 'L':
-				strcpy( pExecCmd, szFirstParam );
-				pExecCmd += strlen( szFirstParam );
+			  case _T( '1' ):
+			  case _T( 'L' ):
+				_tcscpy( pExecCmd, szFirstParam );
+				pExecCmd += _tcslen( szFirstParam );
 				
-			  Case '*':
-				strcpy( pExecCmd, pOtherParam );
-				pExecCmd += strlen( pOtherParam );
+			  Case _T( '*' ):
+				_tcscpy( pExecCmd, pOtherParam );
+				pExecCmd += _tcslen( pOtherParam );
 				
 			  Default:
 				*pExecCmd++ = pAction[ -1 ];
 				*pExecCmd++ = *pAction;
 			}
 		}else{
-			// % ˆÈŠO‚Ì•¶Žš‚Í‚»‚Ì‚Ü‚ÜƒRƒs[
+			// % ä»¥å¤–ã®æ–‡å­—ã¯ãã®ã¾ã¾ã‚³ãƒ”ãƒ¼
 			*pExecCmd++ = *pAction;
 		}
 	}while( *pAction++ );
 	
-	// s––‚ÌƒXƒy[ƒXíœ
-	for( pExecCmd = szExecCmd + strlen( szExecCmd ) - 1;
+	// è¡Œæœ«ã®ã‚¹ãƒšãƒ¼ã‚¹å‰Šé™¤
+	for( pExecCmd = szExecCmd + _tcslen( szExecCmd ) - 1;
 		IsBlank( *pExecCmd ) && pExecCmd >= szExecCmd;
 		--pExecCmd ){
 		
-		*pExecCmd = '\0';
+		*pExecCmd = _T( '\0' );
 	}
 	
-	// ŽÀs‰º€”õ
+	// å®Ÿè¡Œä¸‹æº–å‚™
 	
 	if( pStartupInfo ){
 		si = *pStartupInfo;
@@ -276,11 +276,11 @@ BOOL ExecuteFile(
 	if( uOption & EXECFILE_CHDIR ){
 		StrTokFile( szPath, szFirstParam, STF_DRV | STF_PATH );
 	}else{
-		*szPath = '\0';
+		*szPath = _T( '\0' );
 	}
 	
-	// ‚¢‚æ‚¢‚æŽÀs
-	DebugMsgD( "CreateProcess >>%s<<\n", szExecCmd );
+	// ã„ã‚ˆã„ã‚ˆå®Ÿè¡Œ
+	DebugMsgD( _T( "CreateProcess >>%s<<\n" ), szExecCmd );
 	
 	bRet = CreateProcess(
 		NULL, szExecCmd,				/* exec file, params				*/
@@ -293,22 +293,22 @@ BOOL ExecuteFile(
 		&si, &pi
 	);
 	
-	// ŽÀs¬Œ÷?
+	// å®Ÿè¡ŒæˆåŠŸ?
 	if( bRet ){
-		// ppiRet ‚ÉŠi”[—v‹‚ªo‚Ä‚¢‚é‚©?
+		// ppiRet ã«æ ¼ç´è¦æ±‚ãŒå‡ºã¦ã„ã‚‹ã‹?
 		if( ppiRet != NULL ){
 			
-			// Ši”[Dƒnƒ“ƒhƒ‹‚ð•Â‚¶‚é‚Ì‚Í caller ‚ÌÓ”C
+			// æ ¼ç´ï¼Žãƒãƒ³ãƒ‰ãƒ«ã‚’é–‰ã˜ã‚‹ã®ã¯ caller ã®è²¬ä»»
 			*ppiRet = pi;
 		}else{
 			
-			// ƒnƒ“ƒhƒ‹‚ÍC‚¢‚ç‚È‚¢C‚¢‚ç‚È‚¢D
+			// ãƒãƒ³ãƒ‰ãƒ«ã¯ï¼Œã„ã‚‰ãªã„ï¼Œã„ã‚‰ãªã„ï¼Ž
 			CloseHandle( pi.hProcess );
 			CloseHandle( pi.hThread );
 		}
 	}
 	
-	if( uOption & EXECFILE_RET_CMD ) strcpy( szCmdLine, szExecCmd );
+	if( uOption & EXECFILE_RET_CMD ) _tcscpy( szCmdLine, szExecCmd );
 	
 	return( bRet );
 }

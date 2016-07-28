@@ -12,7 +12,7 @@
 extern "C" {
 #endif	/* def __cplusplus */
 
-#define IsBlank( c )	(( c ) == ' ' || ( c ) == '\t' )
+#define IsBlank( c )	(( c ) == _T( ' ' ) || ( c ) == _T( '\t' ))
 #define SkipBlank( p )	do{ while( IsBlank( *( p ))) ++( p ); } while( 0 )
 #define SearchExt( p )	StrTokFile( NULL, ( p ), STF_EXT )
 #define ZeroToNull( p )	( *( p ) ? ( p ) : NULL )
@@ -32,27 +32,27 @@ enum{
 	STF_PATH2	= STF_DRV  | STF_PATH
 };
 
-char *	StrTokFile( char *, const char *, UINT );
-char *	GetFullPathWithCDir( char *szDst, const char *szFileName, const char *szCDir );
-BOOL IsExt( const char *szFileName, const char *szExt );
-char *	ChangeExt( char *, char *, char * );
-char *	StrCatPathChar( char * );
-char *	StrShift( char *, int );
-char *	StrQuote( char * );
-char *	StrRemoveCR( char * );
-char *	StrGetParam( char *, char ** );
-char *	StrSearchMem( char *, char *, UINT, UINT );
-int		StrReplaceEnv( char *, char * );
+TCHAR *	StrTokFile( TCHAR *, const TCHAR *, UINT );
+TCHAR *	GetFullPathWithCDir( TCHAR *szDst, const TCHAR *szFileName, const TCHAR *szCDir );
+BOOL IsExt( const TCHAR *szFileName, const TCHAR *szExt );
+TCHAR *	ChangeExt( TCHAR *, TCHAR *, TCHAR * );
+TCHAR *	StrCatPathChar( TCHAR * );
+TCHAR *	StrShift( TCHAR *, int );
+TCHAR *	StrQuote( TCHAR * );
+TCHAR *	StrRemoveCR( TCHAR * );
+TCHAR *	StrGetParam( TCHAR *, TCHAR ** );
+TCHAR *	StrSearchMem( TCHAR *, TCHAR *, UINT, UINT );
+int		StrReplaceEnv( TCHAR *, TCHAR * );
 
 /*** shell exec *************************************************************/
 
 enum{
-	EXECFILE_CHDIR		= 1 << 0,	// %1 ‚Ì DIR ‚É CD
-	EXECFILE_RET_CMD	= 1 << 1,	// ÅI“I‚ÉŽÀs‚µ‚½ cmd ‚ð szCmdLine ‚É•Ô‚·
+	EXECFILE_CHDIR		= 1 << 0,	// %1 ã® DIR ã« CD
+	EXECFILE_RET_CMD	= 1 << 1,	// æœ€çµ‚çš„ã«å®Ÿè¡Œã—ãŸ cmd ã‚’ szCmdLine ã«è¿”ã™
 };
 
 BOOL ExecuteFile(
-	char				*szCmdLine,
+	TCHAR				*szCmdLine,
 	STARTUPINFO			*pStartupInfo,
 	PROCESS_INFORMATION	*ppiRet,
 	UINT				uOption

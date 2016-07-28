@@ -7,35 +7,35 @@
 
 /*** constant definition ****************************************************/
 
-enum{									// ƒIƒvƒVƒ‡ƒ“ƒ^ƒCƒv
-	CMDOPT_TYPE_INT,					// ®”’l
-	CMDOPT_TYPE_STR,					// •¶Žš—ñ
-	CMDOPT_TYPE_STR_NONULL,				// ”ñƒkƒ‹•¶Žš—ñ
+enum{									// ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã‚¿ã‚¤ãƒ—
+	CMDOPT_TYPE_INT,					// æ•´æ•°å€¤
+	CMDOPT_TYPE_STR,					// æ–‡å­—åˆ—
+	CMDOPT_TYPE_STR_NONULL,				// éžãƒŒãƒ«æ–‡å­—åˆ—
 	
-	CMDOPT_TYPE_MASK		= 0x7F,		// type mask ’l
-	CMDOPT_TYPE_SPECIFIED	= 0x80		// Žw’è‚³‚ê‚½ƒtƒ‰ƒO
+	CMDOPT_TYPE_MASK		= 0x7F,		// type mask å€¤
+	CMDOPT_TYPE_SPECIFIED	= 0x80		// æŒ‡å®šã•ã‚ŒãŸãƒ•ãƒ©ã‚°
 };
 
 
-enum{									// ƒGƒ‰[ƒ^ƒCƒv
-	CMDOPT_ERR_SUCCESS = 0,				// ¬Œ÷
-	CMDOPT_ERR_UNKNOWN,					// ƒIƒvƒVƒ‡ƒ“•¶Žš‚ª‚È‚¢
-	CMDOPT_ERR_NOSTR					// •¶Žš—ñ‚ªŽæ“¾‚Å‚«‚È‚¢
+enum{									// ã‚¨ãƒ©ãƒ¼ã‚¿ã‚¤ãƒ—
+	CMDOPT_ERR_SUCCESS = 0,				// æˆåŠŸ
+	CMDOPT_ERR_UNKNOWN,					// ã‚ªãƒ—ã‚·ãƒ§ãƒ³æ–‡å­—ãŒãªã„
+	CMDOPT_ERR_NOSTR					// æ–‡å­—åˆ—ãŒå–å¾—ã§ããªã„
 };
 
 /*** new type ***************************************************************/
 
 typedef struct {
-	char	cOptChar,		// ƒIƒvƒVƒ‡ƒ“•¶Žš ignore case Žž‚Í¬•¶Žš‚ÅŽw’è
-			cType;			// ƒIƒvƒVƒ‡ƒ“E•Ï”ƒ^ƒCƒv
-	void	*pVar;			// •Ï”‚Ö‚Ìƒ|ƒCƒ“ƒ^
+	TCHAR	cOptChar,		// ã‚ªãƒ—ã‚·ãƒ§ãƒ³æ–‡å­— ignore case æ™‚ã¯å°æ–‡å­—ã§æŒ‡å®š
+			cType;			// ã‚ªãƒ—ã‚·ãƒ§ãƒ³ãƒ»å¤‰æ•°ã‚¿ã‚¤ãƒ—
+	void	*pVar;			// å¤‰æ•°ã¸ã®ãƒã‚¤ãƒ³ã‚¿
 } CMDOPT_LIST;
 
-typedef void ( *CMDOPT_ERR_PROC )(	// ƒGƒ‰[ƒnƒ“ƒhƒ‰ŠÖ”
-	char,							// ƒGƒ‰[Œ´ˆö‚ÌƒIƒvƒVƒ‡ƒ“
-	UINT );							// ƒGƒ‰[ƒR[ƒh
+typedef void ( *CMDOPT_ERR_PROC )(	// ã‚¨ãƒ©ãƒ¼ãƒãƒ³ãƒ‰ãƒ©é–¢æ•°
+	TCHAR,							// ã‚¨ãƒ©ãƒ¼åŽŸå› ã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³
+	UINT );							// ã‚¨ãƒ©ãƒ¼ã‚³ãƒ¼ãƒ‰
 
 /*** extern & prototype *****************************************************/
 
-UINT GetCmdLineOption( char *, CMDOPT_LIST *, char **, CMDOPT_ERR_PROC );
+UINT GetCmdLineOption( TCHAR *, CMDOPT_LIST *, TCHAR **, CMDOPT_ERR_PROC );
 BOOL IsCmdLineOptSpecified( void *, CMDOPT_LIST * );

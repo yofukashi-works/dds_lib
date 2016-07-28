@@ -3,8 +3,8 @@
 		cmd_opt.c -- command line option parser
 		Copyright(C) 2000 by D.D.S
 
-2001.02.11	opt ‚ª "-opt" ƒNƒH[ƒg‚³‚ê‚Ä‚¢‚½‚Æ‚« opt ‚Æ”FŽ¯‚µ‚È‚©‚Á‚½
-2002.02.04	Win32 Žž‚Æ‚»‚¤‚Å‚È‚¢‚Æ‚« DebugMsg ‚ÌŽÀ‘Ì‚ðØ‚è‘Ö‚¦‚é
+2001.02.11	opt ãŒ "-opt" ã‚¯ã‚©ãƒ¼ãƒˆã•ã‚Œã¦ã„ãŸã¨ã opt ã¨èªè­˜ã—ãªã‹ã£ãŸ
+2002.02.04	Win32 æ™‚ã¨ãã†ã§ãªã„ã¨ã DebugMsg ã®å®Ÿä½“ã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹
 
 *****************************************************************************/
 
@@ -23,10 +23,10 @@
 
 /*** macros *****************************************************************/
 
-#define CMDOPT_DEF_SEP_CHAR		'-'		// ƒIƒvƒVƒ‡ƒ“Eƒpƒ‰ƒ[ƒ^EƒZƒpƒŒ[ƒ^
-//#define CMDOPT_DEF_BREAK_ON_ERR		// ƒGƒ‰[”­¶Žž‘¦ƒŠƒ^[ƒ“
-//#define CMDOPT_DEF_IGNORE_CASE		// ‘å•¶ŽšE¬•¶Žš“¯ˆêŽ‹
-//#define CMDOPT_DEF_SWITCH_DEFAULT		// opt ’lÈ—ªŽž‚ÍƒfƒtƒHƒ‹ƒg‚ð”½“]
+#define CMDOPT_DEF_SEP_CHAR		_T( '-' )		// ã‚ªãƒ—ã‚·ãƒ§ãƒ³ãƒ»ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒ»ã‚»ãƒ‘ãƒ¬ãƒ¼ã‚¿
+//#define CMDOPT_DEF_BREAK_ON_ERR		// ã‚¨ãƒ©ãƒ¼ç™ºç”Ÿæ™‚å³ãƒªã‚¿ãƒ¼ãƒ³
+//#define CMDOPT_DEF_IGNORE_CASE		// å¤§æ–‡å­—ãƒ»å°æ–‡å­—åŒä¸€è¦–
+//#define CMDOPT_DEF_SWITCH_DEFAULT		// opt å€¤çœç•¥æ™‚ã¯ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚’åè»¢
 
 #define SetIfNotNull( p, v ) if(( p )!= NULL ) *( p ) = ( v );
 
@@ -42,54 +42,54 @@
 
 /*** nop function for error handler proc ************************************/
 
-static void ErrProcNop( char cOptChar, UINT uErrCode ){}
+static void ErrProcNop( TCHAR cOptChar, UINT uErrCode ){}
 
 /*** get command line option ************************************************/
 /*
-ƒRƒ}ƒ“ƒhƒ‰ƒCƒ“ƒIƒvƒVƒ‡ƒ“‚ð“Ç‚Þ
-¬Œ÷‚µ‚½‚ç 0 ‚ð•Ô‚·
-Ž¸”s‚µ‚½‚ç pOtherParam ‚É‚»‚Ìƒ|ƒCƒ“ƒ^‚ð•Ô‚·
-pOtherParam ‚ÍCæ“ª‚Ìƒuƒ‰ƒ“ƒN‚Íœ‹Ž‚³‚ê‚é
+ã‚³ãƒžãƒ³ãƒ‰ãƒ©ã‚¤ãƒ³ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã‚’èª­ã‚€
+æˆåŠŸã—ãŸã‚‰ 0 ã‚’è¿”ã™
+å¤±æ•—ã—ãŸã‚‰ pOtherParam ã«ãã®ãƒã‚¤ãƒ³ã‚¿ã‚’è¿”ã™
+pOtherParam ã¯ï¼Œå…ˆé ­ã®ãƒ–ãƒ©ãƒ³ã‚¯ã¯é™¤åŽ»ã•ã‚Œã‚‹
 */
 
 UINT GetCmdLineOption(
-	char			*szCmdLine,			// ƒRƒ}ƒ“ƒhƒ‰ƒCƒ“•¶Žš—ñ
-	CMDOPT_LIST		*opt,				// ƒIƒvƒVƒ‡ƒ“ƒŠƒXƒg
-	char			**pOtherParam,		// opt ˆÈŠO‚ÌŽc‚è‚Ì•¶Žš—ñ‚ð‚³‚· ptr
-	CMDOPT_ERR_PROC ErrorProc ){		// ƒGƒ‰[ƒnƒ“ƒhƒ‰ŠÖ”
+	TCHAR			*szCmdLine,			// ã‚³ãƒžãƒ³ãƒ‰ãƒ©ã‚¤ãƒ³æ–‡å­—åˆ—
+	CMDOPT_LIST		*opt,				// ã‚ªãƒ—ã‚·ãƒ§ãƒ³ãƒªã‚¹ãƒˆ
+	TCHAR			**pOtherParam,		// opt ä»¥å¤–ã®æ®‹ã‚Šã®æ–‡å­—åˆ—ã‚’ã•ã™ ptr
+	CMDOPT_ERR_PROC ErrorProc ){		// ã‚¨ãƒ©ãƒ¼ãƒãƒ³ãƒ‰ãƒ©é–¢æ•°
 	
-	char	*p = szCmdLine;
+	TCHAR	*p = szCmdLine;
 	
-	UINT	uRet = CMDOPT_ERR_SUCCESS,	// –ß‚è’l
+	UINT	uRet = CMDOPT_ERR_SUCCESS,	// æˆ»ã‚Šå€¤
 			u;
 	
-	// ƒGƒ‰[ƒnƒ“ƒhƒ‰Ý’è
+	// ã‚¨ãƒ©ãƒ¼ãƒãƒ³ãƒ‰ãƒ©è¨­å®š
 	
 	if( ErrorProc == NULL ) ErrorProc = ErrProcNop;
 	
-	// ŠJŽn
+	// é–‹å§‹
 	
 	for(;;){
 		SkipBlank( p );
 		
-		// ƒpƒ‰ƒ[ƒ^æ“ª‚ª '-' ˆÈŠO‚È‚çCopt ‰ðÍI—¹D
+		// ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿å…ˆé ­ãŒ '-' ä»¥å¤–ãªã‚‰ï¼Œopt è§£æžçµ‚äº†ï¼Ž
 		
-		if( *p == '\"' && p[ 1 ] == CMDOPT_DEF_SEP_CHAR ) ++p;
+		if( *p == _T( '\"' ) && p[ 1 ] == CMDOPT_DEF_SEP_CHAR ) ++p;
 		else if( *p != CMDOPT_DEF_SEP_CHAR ) break;
 		
-		// ƒpƒ‰ƒ[ƒ^‚ð 1‚ÂŽæ‚èž‚Ý //////////////////////////////////////////
+		// ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’ 1ã¤å–ã‚Šè¾¼ã¿ //////////////////////////////////////////
 		
 		++p;
-		while( *p != '\0' && *p != ' ' && *p != '\t' ){
+		while( *p != _T( '\0' ) && *p != _T( ' ' ) && *p != _T( '\t' )){
 			
-			if( *p == '\"' ){
+			if( *p == _T( '\"' )){
 				++p;
 				continue;
 			}
 			
-			// ƒIƒvƒVƒ‡ƒ“•¶Žš *p ‚ðƒŠƒXƒg‚©‚çƒT[ƒ` //////////////////////////
+			// ã‚ªãƒ—ã‚·ãƒ§ãƒ³æ–‡å­— *p ã‚’ãƒªã‚¹ãƒˆã‹ã‚‰ã‚µãƒ¼ãƒ //////////////////////////
 			
-			for( u = 0; OPT_CHAR( u ) != '\0'; ++u ){
+			for( u = 0; OPT_CHAR( u ) != _T( '\0' ); ++u ){
 				
 #				ifdef CMDOPT_DEF_IGNORE_CASE
 					if( OPT_CHAR( u ) == tolower( *p )) break;
@@ -100,9 +100,9 @@ UINT GetCmdLineOption(
 #				endif	// CMDOPT_DEF_IGNORE_CASE
 			}
 			
-			// unknown opt ‚©? ///////////////////////////////////////////////
+			// unknown opt ã‹? ///////////////////////////////////////////////
 			
-			if( OPT_CHAR( u ) == '\0' ){
+			if( OPT_CHAR( u ) == _T( '\0' )){
 				ErrorProc( *p, CMDOPT_ERR_UNKNOWN );
 				
 #				ifdef CMDOPT_DEF_BREAK_ON_ERR
@@ -114,14 +114,14 @@ UINT GetCmdLineOption(
 #				endif	//CMDOPT_DEF_BREAK_ON_ERR
 				
 			}else{
-				// option type –ˆ‚Ìˆ— //////////////////////////////////////
+				// option type æ¯Žã®å‡¦ç† //////////////////////////////////////
 				++p;
 				opt[ u ].cType |= CMDOPT_TYPE_SPECIFIED;
 				
 				switch( OPT_VAR_TYPE( u )){
-				  case CMDOPT_TYPE_INT: /*** INT Œ^ *************************/
+				  case CMDOPT_TYPE_INT: /*** INT åž‹ *************************/
 					if( isdigit( *p )){
-						*( int *)OPT_PVAR( u ) = strtol( p, &p, 10 );
+						*( int *)OPT_PVAR( u ) = _tcstol( p, &p, 10 );
 					}else{
 #						ifdef CMDOPT_DEF_SWITCH_DEFAULT
 							*( int *)OPT_PVAR( u ) =
@@ -132,12 +132,12 @@ UINT GetCmdLineOption(
 							
 #						endif	// CMDOPT_DEF_SWITCH_DEFAULT
 					}
-				  Case CMDOPT_TYPE_STR: /*** •¶Žš—ñŒ^ ***********************/
+				  Case CMDOPT_TYPE_STR: /*** æ–‡å­—åˆ—åž‹ ***********************/
 				  case CMDOPT_TYPE_STR_NONULL:
-					StrGetParam(( char *)OPT_PVAR( u ), &p );
+					StrGetParam(( TCHAR *)OPT_PVAR( u ), &p );
 					
 					if( OPT_VAR_TYPE( u ) == CMDOPT_TYPE_STR_NONULL &&
-						*( char *)OPT_PVAR( u ) == '\0' ){
+						*( TCHAR *)OPT_PVAR( u ) == _T( '\0' )){
 						
 						ErrorProc( OPT_CHAR( u ), CMDOPT_ERR_NOSTR );
 						
@@ -153,34 +153,34 @@ UINT GetCmdLineOption(
 					goto Brk1Param;
 				}
 			}
-		} // 1ƒpƒ‰ƒ[ƒ^‚ÌI—¹
+		} // 1ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®çµ‚äº†
 		
-	  Brk1Param: ;	// opt char ˆÈ~‚ª‚·‚×‚Ä‚»‚Ì opt ‚ÌŠÇŠ‚Ìê‡‚±‚±‚Éjmp
+	  Brk1Param: ;	// opt char ä»¥é™ãŒã™ã¹ã¦ãã® opt ã®ç®¡è½„ã®å ´åˆã“ã“ã«jmp
 	}
 	
-	// ¬Œ÷I—¹
+	// æˆåŠŸçµ‚äº†
 	SetIfNotNull( pOtherParam, p );
 	
 	// Debug information
 	IfDebug{
-		DEBUG_MSG( "GetCmdLineOption:report start >>>>\n" );
+		DEBUG_MSG( _T( "GetCmdLineOption:report start >>>>\n" ));
 		
-		for( u = 0; OPT_CHAR( u ) != '\0'; ++u ){
-			DEBUG_MSG( "'%c' %d ",
+		for( u = 0; OPT_CHAR( u ) != _T( '\0' ); ++u ){
+			DEBUG_MSG( _T( "_T( '%c' ) %d " ),
 				OPT_CHAR( u ),
 				( opt[ u ].cType & CMDOPT_TYPE_SPECIFIED ) != 0 );
 			
 			switch( OPT_VAR_TYPE( u )){
-				case CMDOPT_TYPE_INT:	DEBUG_MSG( "%u\n", *( UINT *)OPT_PVAR( u ));
+				case CMDOPT_TYPE_INT:	DEBUG_MSG( _T( "%u\n" ), *( UINT *)OPT_PVAR( u ));
 				
 				Case CMDOPT_TYPE_STR_NONULL:
-				case CMDOPT_TYPE_STR:	DEBUG_MSG( "\"%s\"\n", ( char *)OPT_PVAR( u ));
+				case CMDOPT_TYPE_STR:	DEBUG_MSG( _T( "\"%s\"\n" ), ( TCHAR *)OPT_PVAR( u ));
 				
-				Default:				DEBUG_MSG( "Unknown var type\n" );
+				Default:				DEBUG_MSG( _T( "Unknown var type\n" ));
 			}
 		}
 		
-		DEBUG_MSG( "GetCmdLineOption:report end   <<<<\n" );
+		DEBUG_MSG( _T( "GetCmdLineOption:report end   <<<<\n" ));
 	}
 	
 	return( uRet );
@@ -192,7 +192,7 @@ BOOL IsCmdLineOptSpecified( void *pVar, CMDOPT_LIST *opt ){
 	
 	UINT	u;
 	
-	for( u = 0; OPT_CHAR( u ) != '\0'; ++u ){
+	for( u = 0; OPT_CHAR( u ) != _T( '\0' ); ++u ){
 		if( OPT_PVAR( u ) == pVar )
 			return(( opt[ u ].cType & CMDOPT_TYPE_SPECIFIED ) != 0 );
 	}

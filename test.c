@@ -8,18 +8,18 @@
 
 /*** test bench *************************************************************/
 
-void main( int argc, char **argv ){
+void main( int argc, TCHAR **argv ){
 	
-	char	szBuf[ 260 ];
+	TCHAR	szBuf[ 260 ];
 	int		i;
-	char	*p;
+	TCHAR	*p;
 	
 	puts( argv[ 1 ] );
 	
 	for( p = argv[ 1 ]; *p; ++p ){
-		if( *p == '#' ) *p = '%';
+		if( *p == _T( '#' )) *p = _T( '%' );
 	}
 	
 	i = StrReplaceEnv( szBuf, argv[ 1 ] );
-	printf( "%d:%s\n", i, szBuf );
+	printf( _T( "%d:%s\n" ), i, szBuf );
 }

@@ -3,11 +3,11 @@
 		string.c -- dds string library
 		Copyright(C) 1997 - 2000 by Deyu Deyu Software
 
-2001.02.04	StrTokFile : ŠY“– str ‚ª‚È‚¢‚Æ‚«‚Í NULL ‚ğ•Ô‚· ( szDst == NULL )
-2001.03.29	StrGetParam : szDst == NULL ‚Ì‚Íƒ|ƒCƒ“ƒ^‚¾‚¯•Ô‚·
-2002.02.04	WIN32 ŒÅ—L•”•ª‚ğØ‚è—£‚µ‰Â”\‚É‚µ‚½
-			StrQuote : " ‚ª‚È‚¢‚Æ‚«‚¾‚¯ " ‚ğ•t‰Á‚·‚é
-			StrExpandEnv ’Ç‰Á
+2001.02.04	StrTokFile : è©²å½“ _tcs ãŒãªã„ã¨ãã¯ NULL ã‚’è¿”ã™ ( szDst == NULLæ™‚ )
+2001.03.29	StrGetParam : szDst == NULL ã®æ™‚ã¯ãƒã‚¤ãƒ³ã‚¿ã ã‘è¿”ã™
+2002.02.04	WIN32 å›ºæœ‰éƒ¨åˆ†ã‚’åˆ‡ã‚Šé›¢ã—å¯èƒ½ã«ã—ãŸ
+			StrQuote : " ãŒãªã„ã¨ãã ã‘ " ã‚’ä»˜åŠ ã™ã‚‹
+			StrExpandEnv è¿½åŠ 
 
 *****************************************************************************/
 
@@ -16,8 +16,6 @@
 	#define WIN32_LEAN_AND_MEAN
 	#include <windows.h>
 	#include <direct.h>
-	#define	getcwd	_getcwd
-	#define	chdir	_chdir
 #endif
 #include <stdlib.h>
 
@@ -29,37 +27,37 @@
 #define StrCpy_fromP2P( dst, from, to ) \
 	while(( from ) < ( to )) ( *( dst )++ = *( from )++ )
 
-/*** strtokfile *************************************************************/
+/*** _tcstokfile *************************************************************/
 /*
-	filename operation ‚Ì^‘Å“oê
-	szDst == NULL ‚Ì‚Æ‚«‚ÍCszFileName “à‚Ì sub string ‚ğ•Ô‚·
-	ŠY“–•”•ª‚ª‚È‚¯‚ê‚ÎCret = NULL
+	filename operation ã®çœŸæ‰“ç™»å ´
+	szDst == NULL ã®ã¨ãã¯ï¼ŒszFileName å†…ã® sub string ã‚’è¿”ã™
+	è©²å½“éƒ¨åˆ†ãŒãªã‘ã‚Œã°ï¼Œret = NULL
 */
 
-char *StrTokFile( char *szDst, const char *szFileName, UINT uMode ){
+TCHAR *StrTokFile( TCHAR *szDst, const TCHAR *szFileName, UINT uMode ){
 	
-	const char	*pPath,
+	const TCHAR	*pPath,
 				*pNode,
 				*pExt,
 				*pSce = szFileName;
-	char		*pDst = szDst;
+	TCHAR		*pDst = szDst;
 	
 	DWORD	dwLen;
 	
 	#ifdef _WIN32
 		if( szDst ){
-			// full path •ÏŠ·
+			// full path å¤‰æ›
 			if( uMode & STF_FULL ){
 				if(( dwLen = GetFullPathName( pSce, MAX_PATH, szDst, NULL )) && dwLen < MAX_PATH )
 					pSce = szDst;
 			}
 			
-			// LFN •ÏŠ·
+			// LFN å¤‰æ›
 			if( uMode & STF_LONG ){
 				if(( dwLen = GetLongPathName( pSce, szDst, MAX_PATH )) && dwLen < MAX_PATH )
 					pSce = szDst;
 				
-			// SFN •ÏŠ·
+			// SFN å¤‰æ›
 			}else if( uMode & STF_SHORT ){
 				if(( dwLen = GetShortPathName( pSce, szDst, MAX_PATH )) && dwLen < MAX_PATH )
 					pSce = szDst;
@@ -67,171 +65,171 @@ char *StrTokFile( char *szDst, const char *szFileName, UINT uMode ){
 		}
 	#endif // _WIN32
 	
-	// ƒpƒX–¼
-	if( pSce[ 0 ] != '\0' && pSce[ 1 ] == ':' )
+	// ãƒ‘ã‚¹å
+	if( pSce[ 0 ] != _T( '\0' ) && pSce[ 1 ] == _T( ':' ))
 		pPath = pSce + 2;
 	else
 		pPath = pSce;
 	
-	// ƒm[ƒh–¼
-	if( pNode = strrchr( pPath, '\\' )) ++pNode;
+	// ãƒãƒ¼ãƒ‰å
+	if( pNode = _tcsrchr( pPath, _T( '\\' ))) ++pNode;
 	else pNode = pPath;
 	
-	// Šg’£q
-	if( !( pExt = strrchr( pNode, '.' ))) pExt = strchr( pNode, '\0' );
+	// æ‹¡å¼µå­
+	if( !( pExt = _tcsrchr( pNode, _T( '.' )))) pExt = _tcschr( pNode, _T( '\0' ));
 	
 	if( szDst == NULL ){
-		if( uMode & STF_PATH )	return(( char *)ZeroToNull( pPath ));
-		if( uMode & STF_NODE )	return(( char *)ZeroToNull( pNode ));
-		if( uMode & STF_EXT )	return(( char *)ZeroToNull( pExt ));
-		return(( char *)pSce );
+		if( uMode & STF_PATH )	return(( TCHAR *)ZeroToNull( pPath ));
+		if( uMode & STF_NODE )	return(( TCHAR *)ZeroToNull( pNode ));
+		if( uMode & STF_EXT )	return(( TCHAR *)ZeroToNull( pExt ));
+		return(( TCHAR *)pSce );
 	}
 	
-	// szDst ‚ÉƒRƒs[
-	// StrCpy_fromP2P ‚Ì arg[ 1 ] ‚Í”j‰ó‚³‚ê‚é
+	// szDst ã«ã‚³ãƒ”ãƒ¼
+	// StrCpy_fromP2P ã® arg[ 1 ] ã¯ç ´å£Šã•ã‚Œã‚‹
 	if(( uMode & ( STF_DRV | STF_PATH | STF_NODE | STF_EXT )) == 0 ){
-		strcpy( pDst, pSce );
+		_tcscpy( pDst, pSce );
 	}else{
 		if( uMode & STF_DRV )  StrCpy_fromP2P( pDst, pSce,  pPath );
 		if( uMode & STF_PATH ) StrCpy_fromP2P( pDst, pPath, pNode );
 		if( uMode & STF_NODE ) StrCpy_fromP2P( pDst, pNode, pExt );
 		
-		*pDst = '\0';
+		*pDst = _T( '\0' );
 		
-		if( uMode & STF_EXT )  strcpy( pDst, pExt );
+		if( uMode & STF_EXT )  _tcscpy( pDst, pExt );
 	}
 	
 	return( ZeroToNull( szDst ));
 }
 
 
-/*** cdir ‚ğw’è‚µ‚½ƒtƒ‹ƒpƒX–¼æ“¾ ******************************************/
-// szCDir ‚Íƒtƒ@ƒCƒ‹‚Å‚à‚æ‚¢
+/*** cdir ã‚’æŒ‡å®šã—ãŸãƒ•ãƒ«ãƒ‘ã‚¹åå–å¾— ******************************************/
+// szCDir ã¯ãƒ•ã‚¡ã‚¤ãƒ«ã§ã‚‚ã‚ˆã„
 
-char *GetFullPathWithCDir( char *szDst, const char *szFileName, const char *szCDir ){
+TCHAR *GetFullPathWithCDir( TCHAR *szDst, const TCHAR *szFileName, const TCHAR *szCDir ){
 	
-	char	szCWDir[ MAX_PATH ];
+	TCHAR	szCWDir[ MAX_PATH ];
 	
-	getcwd( szCWDir, MAX_PATH );	// ƒJƒŒƒ“ƒg dir
+	_tgetcwd( szCWDir, MAX_PATH );	// ã‚«ãƒ¬ãƒ³ãƒˆ dir
 	
-	// szCDir ‚Ì dir •”•ªæ“¾
+	// szCDir ã® dir éƒ¨åˆ†å–å¾—
 	StrTokFile( szDst, szCDir, STF_PATH2 | STF_LONG | STF_FULL );
 	
-	if( chdir( szDst ) != 0 ) return NULL;					// CDir ‚É cd
-	StrTokFile( szDst, szFileName, STF_FULL | STF_LONG );	// szFileName ‚Ì FullPath
-	chdir( szCWDir );										// pwd ‚ğŒ³‚É–ß‚·
+	if( _tchdir( szDst ) != 0 ) return NULL;				// CDir ã« cd
+	StrTokFile( szDst, szFileName, STF_FULL | STF_LONG );	// szFileName ã® FullPath
+	_tchdir( szCWDir );										// pwd ã‚’å…ƒã«æˆ»ã™
 	
 	return szDst;
 }
 
 /*** IsExt ******************************************************************/
-/* ƒtƒ@ƒCƒ‹–¼ vs Šg’£q‚Ì”äŠr	szExt ‚É‚Í '.' ‚ğŠÜ‚Ü‚È‚¢ */
+/* ãƒ•ã‚¡ã‚¤ãƒ«å vs æ‹¡å¼µå­ã®æ¯”è¼ƒ	szExt ã«ã¯ '.' ã‚’å«ã¾ãªã„ */
 
-BOOL IsExt( const char *szFileName, const char *szExt ){
+BOOL IsExt( const TCHAR *szFileName, const TCHAR *szExt ){
 	
-	char *pExt;
+	TCHAR *pExt;
 	
 	return(
 		( pExt = SearchExt( szFileName )) == NULL ?
 			szExt == NULL :
-			!_stricmp( ++pExt, szExt )
+			!_tcsicmp( ++pExt, szExt )
 	);
 }
 
 /*** change ext *************************************************************/
-/* szExt ‚É . ‚Í•t‚¯‚È‚¢ */
-/* szExt == NULL ‚Ì‚Æ‚«‚ÍCŠg’£q‚ğíœ */
+/* szExt ã« . ã¯ä»˜ã‘ãªã„ */
+/* szExt == NULL ã®ã¨ãã¯ï¼Œæ‹¡å¼µå­ã‚’å‰Šé™¤ */
 
-char *ChangeExt( char *szDst, char *szFileName, char *szExt ){
+TCHAR *ChangeExt( TCHAR *szDst, TCHAR *szFileName, TCHAR *szExt ){
 	
 	StrTokFile( szDst, szFileName, STF_PATH2 | STF_NODE );
 	return(
-		( szExt )	? strcat( strcat( szDst, "." ), szExt )
+		( szExt )	? _tcscat( _tcscat( szDst, _T( "." )), szExt )
 					: szDst
 	);
 }
 
-/*** ÅŒã”ö‚É \ ‚ğ•t‰Á ******************************************************/
+/*** æœ€å¾Œå°¾ã« \ ã‚’ä»˜åŠ  ******************************************************/
 
-char *StrCatPathChar( char *szPath ){
+TCHAR *StrCatPathChar( TCHAR *szPath ){
 	
-	char *p;
-	static const char szPathChar[] = "\\";
+	TCHAR *p;
+	static const TCHAR szPathChar[] = _T( "\\" );
 	
-	if( *szPath == '\0' ) return( strcpy( szPath, szPathChar ));
+	if( *szPath == _T( '\0' )) return( _tcscpy( szPath, szPathChar ));
 	
-	p = strchr( szPath, '\0' ) - 1;
-	if( *p != '\\' ) strcpy( ++p, szPathChar );
+	p = _tcschr( szPath, _T( '\0' )) - 1;
+	if( *p != _T( '\\' )) _tcscpy( ++p, szPathChar );
 	
 	return( szPath );
 }
 
-/*** string ‚Ì shift ********************************************************/
-/* iCnt > 0 ‚Å‰EƒVƒtƒgC< 0 ‚Å¶ƒVƒtƒg */
+/*** string ã® shift ********************************************************/
+/* iCnt > 0 ã§å³ã‚·ãƒ•ãƒˆï¼Œ< 0 ã§å·¦ã‚·ãƒ•ãƒˆ */
 
-char *StrShift( char *szBuf, int iCnt ){
+TCHAR *StrShift( TCHAR *szBuf, int iCnt ){
 	
-	char *p;
+	TCHAR *p;
 	
 	if( iCnt > 0 ){
-		for( p = strchr( szBuf, '\0' ); p >= szBuf; --p ) p[ iCnt ] = *p;
+		for( p = _tcschr( szBuf, _T( '\0' )); p >= szBuf; --p ) p[ iCnt ] = *p;
 		
 	}else if( iCnt < 0 ){
 		
 		iCnt = -iCnt;
 		
-		if( strlen( szBuf ) > ( UINT )iCnt )
+		if( _tcslen( szBuf ) > ( UINT )iCnt )
 			for( p = szBuf; *p = p[ iCnt ]; ++p );
 		else
-			*szBuf = '\0';
+			*szBuf = _T( '\0' );
 	}
 	
 	return( szBuf );
 }
 
-/*** "quote" ‚³‚ê‚Ä‚È‚©‚Á‚½‚ç "quote" ***************************************/
+/*** "quote" ã•ã‚Œã¦ãªã‹ã£ãŸã‚‰ "quote" ***************************************/
 
-char *StrQuote( char *szBuf ){
+TCHAR *StrQuote( TCHAR *szBuf ){
 	
-	if( *szBuf != '\"' ){
+	if( *szBuf != _T( '\"' )){
 		StrShift( szBuf, 1 );
-		*szBuf = '\"';
+		*szBuf = _T( '\"' );
 	}
 	
-	if( strchr( szBuf, '\0' )[ -1 ] != '\"' ) strcat( szBuf, "\"" );
+	if( _tcschr( szBuf, _T( '\0' ))[ -1 ] != _T( '\"' )) _tcscat( szBuf, _T( "\"" ));
 	return( szBuf );
 }
 
 /*** remove \n code *********************************************************/
 
-char *StrRemoveCR( char *szBuf ){
+TCHAR *StrRemoveCR( TCHAR *szBuf ){
 	
-	char *p;
+	TCHAR *p;
 	
-	if( p = strchr( szBuf, '\n' )) *p = '\0';
+	if( p = _tcschr( szBuf, _T( '\n' ))) *p = _T( '\0' );
 	return( szBuf );
 }
 
-/*** ”ñ”j‰ó“I get param *****************************************************/
+/*** éç ´å£Šçš„ get param *****************************************************/
 /*
-	"" ‚ÅˆÍ‚Ü‚ê‚½‚à‚Ì‚ÍC"" ‚Íœ‹‚³‚ê‚é
-	pNextParam æ“ª‚Ìƒuƒ‰ƒ“ƒN‚Íœ‹‚³‚ê‚é
-	‚±‚êˆÈã‚È‚¢‚Æ‚«‚ÍC*szDst == '\0' && ret == NULL
-	szDst == NULL ‚ÍC*ppBuf “à‚Ì•¶š—ñ‚ğ•Ô‚·
+	"" ã§å›²ã¾ã‚ŒãŸã‚‚ã®ã¯ï¼Œ"" ã¯é™¤å»ã•ã‚Œã‚‹
+	pNextParam å…ˆé ­ã®ãƒ–ãƒ©ãƒ³ã‚¯ã¯é™¤å»ã•ã‚Œã‚‹
+	ã“ã‚Œä»¥ä¸Šãªã„ã¨ãã¯ï¼Œ*szDst == '\0' && ret == NULL
+	szDst == NULL æ™‚ã¯ï¼Œ*ppBuf å†…ã®æ–‡å­—åˆ—ã‚’è¿”ã™
 */
-char *StrGetParam(		// )
-	char *szDst,		// get ‚µ‚½ param string ‚ÌŠi”[æ
-	char **ppBuf		// buffer ‚Ö‚Ì pp
+TCHAR *StrGetParam(		// )
+	TCHAR *szDst,		// get ã—ãŸ param string ã®æ ¼ç´å…ˆ
+	TCHAR **ppBuf		// buffer ã¸ã® pp
 ){
 	BOOL	bQuoted	= FALSE;
-	char	*pDst	= szDst;
-	char	*pSce	= *ppBuf;		// get Œ³‚Ì string
+	TCHAR	*pDst	= szDst;
+	TCHAR	*pSce	= *ppBuf;		// get å…ƒã® string
 	
 	SkipBlank( pSce );
-	if( !szDst ) szDst = pSce;		// NULL ‚Í *ppBuf “à‚Ì•¶š—ñ‚ğ•Ô‚·
+	if( !szDst ) szDst = pSce;		// NULL æ™‚ã¯ *ppBuf å†…ã®æ–‡å­—åˆ—ã‚’è¿”ã™
 	
-	while(( bQuoted || !IsBlank( *pSce ))&& *pSce != '\n' && *pSce != '\0' ){
-		if( *pSce == '\"' ){
+	while(( bQuoted || !IsBlank( *pSce ))&& *pSce != _T( '\n' ) && *pSce != _T( '\0' )){
+		if( *pSce == _T( '\"' )){
 			bQuoted = !bQuoted;
 			++pSce;
 		}else if( pDst ){
@@ -241,23 +239,23 @@ char *StrGetParam(		// )
 		}
 	}
 	
-	if( pDst ) *pDst = '\0';
+	if( pDst ) *pDst = _T( '\0' );
 	
 	SkipBlank( pSce );
 	*ppBuf = pSce;
 	return( ZeroToNull( szDst ));
 }
 
-/*** ƒoƒbƒtƒ@“à‚©‚ç“Á’è‚Ìƒf[ƒ^—ñ‚ğ’T‚· *************************************/
+/*** ãƒãƒƒãƒ•ã‚¡å†…ã‹ã‚‰ç‰¹å®šã®ãƒ‡ãƒ¼ã‚¿åˆ—ã‚’æ¢ã™ *************************************/
 /*
-	pBuf1 “à‚ÌŒ©‚Â‚¯‚½ ptr ‚ğ•Ô‚·
-	‚È‚¯‚ê‚Î NULL
+	pBuf1 å†…ã®è¦‹ã¤ã‘ãŸ ptr ã‚’è¿”ã™
+	ãªã‘ã‚Œã° NULL
 */
-char *StrSearchMem(		// )
-	char	*pBuf1,		// ‚±‚Ì’†‚©‚ç’T‚µo‚·
-	char	*pBuf2,		// ’T‚µ‚½‚¢ƒf[ƒ^
-	UINT	uBufSize,	// pBuf1 ƒTƒCƒY
-	UINT	uLen		// pBuf2 ƒTƒCƒY
+TCHAR *StrSearchMem(		// )
+	TCHAR	*pBuf1,		// ã“ã®ä¸­ã‹ã‚‰æ¢ã—å‡ºã™
+	TCHAR	*pBuf2,		// æ¢ã—ãŸã„ãƒ‡ãƒ¼ã‚¿
+	UINT	uBufSize,	// pBuf1 ã‚µã‚¤ã‚º
+	UINT	uLen		// pBuf2 ã‚µã‚¤ã‚º
 ){
 	UINT	u;
 	
@@ -269,45 +267,45 @@ char *StrSearchMem(		// )
 	return( NULL );
 }
 
-/*** %hoge% Œ`®‚ÌŠÂ‹«•Ï”‚ğ“WŠJ ********************************************/
+/*** %hoge% å½¢å¼ã®ç’°å¢ƒå¤‰æ•°ã‚’å±•é–‹ ********************************************/
 /*
-	%%hoge%% ‚Å‚à %hoge% ‚ª‚ ‚ê‚Î’uŠ·‰Â”\
-	% ‚Ì‘®‚ª•s\•ª‚È‚à‚ÌCŠÂ‹«•Ï”‚ª‚È‚¢ê‡‚Í’uŠ·‚µ‚È‚¢
-	ret : ’uŠ·‚Å‚«‚½ŠÂ‹«•Ï”‚Ì”
+	%%hoge%% ã§ã‚‚ %hoge% ãŒã‚ã‚Œã°ç½®æ›å¯èƒ½
+	% ã®æ›¸å¼ãŒä¸ååˆ†ãªã‚‚ã®ï¼Œç’°å¢ƒå¤‰æ•°ãŒãªã„å ´åˆã¯ç½®æ›ã—ãªã„
+	ret : ç½®æ›ã§ããŸç’°å¢ƒå¤‰æ•°ã®æ•°
 */
 
-int StrReplaceEnv( char *szDst, char *szSrc ){
+int StrReplaceEnv( TCHAR *szDst, TCHAR *szSrc ){
 	
-	char	*pEnvName = NULL;
-	char	*pEnvValue;
+	TCHAR	*pEnvName = NULL;
+	TCHAR	*pEnvValue;
 	int		iReplaceCnt = 0;
 	
 	for( ; *szSrc; ++szSrc ){
 		
 		*szDst++ = *szSrc;
 		
-		if( *szSrc == '%' ){
-			// ŠÂ‹«•Ï”n‚ß‚Ì %
+		if( *szSrc == _T( '%' )){
+			// ç’°å¢ƒå¤‰æ•°å§‹ã‚ã® %
 			if( pEnvName == NULL )	pEnvName = szDst;
 			else{
 				
-				// ŠÂ‹«•Ï”I‚í‚è‚Ì %
-				szDst[ -1 ] = '\0';	// •Ï”–¼‚ğ \0 ƒ^[ƒ~ƒl[ƒg
+				// ç’°å¢ƒå¤‰æ•°çµ‚ã‚ã‚Šã® %
+				szDst[ -1 ] = _T( '\0' );	// å¤‰æ•°åã‚’ \0 ã‚¿ãƒ¼ãƒŸãƒãƒ¼ãƒˆ
 				
 				if(( pEnvValue = getenv( pEnvName )) != NULL ){
-					strcpy( pEnvName - 1, pEnvValue );	// Œ©‚Â‚©‚Á‚½ŠÂ‹«•Ï”‚ğƒRƒs[
-					szDst = strchr( pEnvName, '\0' );	// Ÿ‚Ìƒ|ƒCƒ“ƒ^
+					_tcscpy( pEnvName - 1, pEnvValue );	// è¦‹ã¤ã‹ã£ãŸç’°å¢ƒå¤‰æ•°ã‚’ã‚³ãƒ”ãƒ¼
+					szDst = _tcschr( pEnvName, _T( '\0' ));	// æ¬¡ã®ãƒã‚¤ãƒ³ã‚¿
 					
 					++iReplaceCnt;
 					pEnvName = NULL;
 					
 				}else{
-					szDst[ -1 ] = '%';	// ’uŠ·‚Å‚«‚È‚©‚Á‚½‚Ì‚Å % ‚ğŒ³‚É–ß‚·
-					pEnvName = szDst;	// I‚í‚è‚¾‚Æv‚Á‚Ä‚¢‚½‚Ì‚ğn‚ß‚É‚·‚é
+					szDst[ -1 ] = _T( '%' );	// ç½®æ›ã§ããªã‹ã£ãŸã®ã§ % ã‚’å…ƒã«æˆ»ã™
+					pEnvName = szDst;	// çµ‚ã‚ã‚Šã ã¨æ€ã£ã¦ã„ãŸã®ã‚’å§‹ã‚ã«ã™ã‚‹
 				}
 			}
 		}
 	}
-	*szDst = '\0';
+	*szDst = _T( '\0' );
 	return( iReplaceCnt );
 }
