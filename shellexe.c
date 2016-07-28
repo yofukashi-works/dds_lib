@@ -87,7 +87,7 @@ TCHAR *GetDefaultAction( TCHAR *szAction, TCHAR *szFileName ){
 		if( *szAction == _T( '\0' )) break;
 		
 		// szAction = HKCR\extfile + \shell\ (^^;
-		_tcscat( szAction, "\\shell\\" );
+		_tcscat( szAction, _T( "\\shell\\" ));
 		
 		// HKCR\extfile\shell\(標準) を取得
 		GetRegStr( HKEY_CLASSES_ROOT, szAction, NULL, szVerb );
@@ -121,7 +121,7 @@ TCHAR *GetShellEscAction( TCHAR *szAction, TCHAR *szFileName ){
 				szMagicID2[] = MAGIC_ID2;
 	
 	// open 失敗で NULL return
-	if(( fp = fopen( szFileName, _T( "rb" ))) == NULL ) return( NULL );
+	if(( fp = _tfopen( szFileName, _T( "rb" ))) == NULL ) return( NULL );
 	
 	// 一行読む
 	fgets( szBuf, SEARCH_LEN, fp );
@@ -157,7 +157,7 @@ TCHAR *GetShellEscAction( TCHAR *szAction, TCHAR *szFileName ){
 	for( p = szCmdFile; *p != _T( '\0' ); ++p ) if( *p == _T( '/' )) *p = '\\';
 	
 	// cmd line param と結合して完成!!
-	sprintf( szAction,
+	_stprintf( szAction,
 		( *pCmdLineParam != _T( '\0' )) ? _T( "\"%s\" %s" ) : _T( "\"%s\"" ),
 		szCmdFile, pCmdLineParam );
 	

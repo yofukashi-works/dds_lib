@@ -5,8 +5,8 @@
 
 *****************************************************************************/
 
-#if !defined _DDS_LIB_H
-#define _DDS_LIB_H
+#pragma once
+#include <tchar.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -61,4 +61,3 @@ BOOL ExecuteFile(
 #ifdef  __cplusplus
 }
 #endif	/* def __cplusplus */
-#endif	/* !def _DDS_LIB_H */

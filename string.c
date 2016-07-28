@@ -292,7 +292,7 @@ int StrReplaceEnv( TCHAR *szDst, TCHAR *szSrc ){
 				// 環境変数終わりの %
 				szDst[ -1 ] = _T( '\0' );	// 変数名を \0 ターミネート
 				
-				if(( pEnvValue = getenv( pEnvName )) != NULL ){
+				if(( pEnvValue = _tgetenv( pEnvName )) != NULL ){
 					_tcscpy( pEnvName - 1, pEnvValue );	// 見つかった環境変数をコピー
 					szDst = _tcschr( pEnvName, _T( '\0' ));	// 次のポインタ
 					
