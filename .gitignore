@@ -1,3 +1,5 @@
-dds_lib/Debug/
-dds_lib/Release/
-dds_lib/ReleaseMT/
+dds_lib/Win32/
+dds_lib/x64/
+Win32/
+x64/
+.vs/
