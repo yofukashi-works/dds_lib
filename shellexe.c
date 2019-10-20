@@ -124,7 +124,7 @@ TCHAR *GetShellEscAction( TCHAR *szAction, TCHAR *szFileName ){
 	if(( fp = _tfopen( szFileName, _T( "rb" ))) == NULL ) return( NULL );
 	
 	// 一行読む
-	fgets( szBuf, SEARCH_LEN, fp );
+	_fgetts( szBuf, SEARCH_LEN, fp );
 	
 	// search #! /hogehoge/....
 	if( p = _tcsstr( szBuf, szMagicID )){
@@ -203,7 +203,7 @@ BOOL ExecuteFile(
 		// 拡張子無しなら実行形式の確認をする
 		if(
 			!SearchExt( szFirstParam ) &&
-			( int )FindExecutable( szFirstParam, NULL, szExecCmd ) > 32 ){
+			FindExecutable( szFirstParam, NULL, szExecCmd ) > ( HINSTANCE )32 ){
 			
 			_tcscpy( szFirstParam, szExecCmd );
 		}

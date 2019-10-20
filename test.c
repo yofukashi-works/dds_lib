@@ -14,12 +14,12 @@ void main( int argc, TCHAR **argv ){
 	int		i;
 	TCHAR	*p;
 	
-	puts( argv[ 1 ] );
+	_putts( argv[ 1 ] );
 	
 	for( p = argv[ 1 ]; *p; ++p ){
 		if( *p == _T( '#' )) *p = _T( '%' );
 	}
 	
 	i = StrReplaceEnv( szBuf, argv[ 1 ] );
-	printf( _T( "%d:%s\n" ), i, szBuf );
+	_tprintf( _T( "%d:%ls\n" ), i, szBuf );
 }
