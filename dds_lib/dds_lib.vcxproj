@@ -33,6 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\cmd_opt.h" />
+    <ClInclude Include="..\dds.h" />
     <ClInclude Include="..\dds_lib.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
