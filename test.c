@@ -21,5 +21,11 @@ void main( int argc, TCHAR **argv ){
 	}
 	
 	i = StrReplaceEnv( szBuf, argv[ 1 ] );
-	_tprintf( _T( "%d:%ls\n" ), i, szBuf );
+	_tprintf(
+		#ifdef UNICODE
+			_T( "%d:%ls\n" )
+		#else
+			"%d:%s\n"
+		#endif
+		, i, szBuf );
 }
