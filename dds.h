@@ -72,9 +72,9 @@ typedef long long		INT64;
 		static T	szMsg[ DEBUG_SPRINTF_BUFSIZE ];
 		
 		if( sizeof( T ) == 1 ){
-			_vsnprintf( szMsg, DEBUG_SPRINTF_BUFSIZE, ( const char *)szFormat, arg );
+			_vsnprintf( reinterpret_cast<char *>( szMsg ), DEBUG_SPRINTF_BUFSIZE, reinterpret_cast<const char *>( szFormat ), arg );
 		}else{
-			_vsnwprintf( szMsg, DEBUG_SPRINTF_BUFSIZE, ( const wchar_t *)szFormat, arg );
+			_vsnwprintf( reinterpret_cast<wchar_t *>( szMsg ), DEBUG_SPRINTF_BUFSIZE, reinterpret_cast<const wchar_t *>( szFormat ), arg );
 		}
 		szMsg[ DEBUG_SPRINTF_BUFSIZE - 1 ] = '\0';
 		return( szMsg );
@@ -131,6 +131,11 @@ typedef long long		INT64;
 	}
 
 #else /*__cplusplus*/
+	#ifdef _MSC_VER
+		#include <tchar.h>
+		#include <wchar.h>
+	#endif
+	
 	static TCHAR * C_DECL DebugSPrintf( TCHAR *szFormat, va_list arg ){
 		
 		static TCHAR	szMsg[ DEBUG_SPRINTF_BUFSIZE ];
